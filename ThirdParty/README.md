@@ -1,0 +1,1 @@
+[deep_learning_notes-Tess_Ferrandez](https://www.slideshare.net/TessFerrandez/notes-from-coursera-deep-learning-courses-by-andrew-ng)
