@@ -77,3 +77,14 @@ example("Matrix transpose") {
     let P = Matrix(elements: [1, 3, 2, 5, 0, 9], rows: 3)
     print("Is correct?", B == P)
 }
+
+example("Matrix appending") {
+    let A = Matrix.ones(size: MatrixSize(rows: 3, columns:1))
+    let B = Matrix(elements: [2, 3, 4, 5, 6, 7], rows: 3)
+    print("Ones matrix: \n", A.description, "append matrix: \n", B.description, "=\n", A.appending(columns: B).description)
+}
+
+example("Matrix sum") {
+    let A = Matrix(elements: [1, 2, 3, 4, 5, 6], rows: 2)
+    print("Matrix: \n", A.description, "Sum: ", A.sum, "\nIs correct: ", A.sum == 21)
+}
