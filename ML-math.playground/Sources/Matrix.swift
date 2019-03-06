@@ -23,8 +23,11 @@ public struct Matrix {
     public var isSquare:Bool {
         return size.columns == size.rows
     }
-    fileprivate var grid: [Double]
+    public var grid: [Double]
     
+    public var sum: Double {
+        return grid.reduce(0, +)
+    }
     // MARK: - String representation
     public var description: String {
         var description = ""
@@ -114,10 +117,21 @@ public struct Matrix {
         grid = Array(repeating: element, count: rows * columns)
     }
 
+    //MARK: - Generator
     public static func eye(_ size: Int) -> Matrix {
         return identity(size)
     }
     
+    public static func ones(size: MatrixSize) -> Matrix {
+        let array = [Double](repeating: 1, count: size.rows*size.columns)
+        return Matrix(elements: array, rows: size.rows)
+    }
+    
+    public static func zeros(size: MatrixSize) -> Matrix {
+        let array = [Double](repeating: 0, count: size.rows*size.columns)
+        return Matrix(elements: array, rows: size.rows)
+    }
+
     public static func identity(_ size: Int) -> Matrix {
         assert(size > 0, "Size should be bigger than zero")
         var elements = [Double](repeating: 0, count: size*size)
@@ -125,6 +139,68 @@ public struct Matrix {
             elements[i + i*size] = 1.0
         }
         return Matrix(elements: elements, rows: size)
+    }
+    
+    //MARK: - Appending
+    public func appending(columns: Matrix) -> Matrix {
+        assert(size.rows != columns.size.rows, "Invalid amount of rows")
+        print(#function)
+        let newSize = MatrixSize(rows: size.rows, columns: size.columns + columns.size.columns)
+        var newArray = [Double](repeating: 0, count: newSize.columns*newSize.rows)
+        
+        for row in 0..<newSize.rows {
+            for column in 0..<newSize.columns {
+                let newIndex = row*newSize.columns + column
+                if column < size.columns {//self
+                    newArray[newIndex] = self[row, column]
+                }else{//new columns
+                    newArray[newIndex] = columns[row, column - size.columns]
+                }
+            }
+        }
+        
+        return Matrix(elements: newArray, rows: newSize.rows)
+    }
+    
+    public func appending(rows: Matrix) -> Matrix {
+        assert(size.columns != rows.size.columns, "Invalid amount of rows")
+
+        let newSize = MatrixSize(rows: size.rows + rows.size.rows, columns: size.columns)
+        var newArray = [Double](repeating: 0, count: newSize.columns*newSize.rows)
+        
+        for column in 0..<newSize.columns {
+            for row in 0..<newSize.rows {
+                let newIndex = row*newSize.columns + column
+                if row < size.rows {//self
+                    newArray[newIndex] = self[row, column]
+                }else{//new columns
+                    newArray[newIndex] = rows[row - size.rows, column]
+                }
+            }
+        }
+        
+        return Matrix(elements: newArray, rows: newSize.rows)
+    }
+    
+    //MARK: Access rows and colums
+    public func row(_ row: Int) -> Matrix {
+        var result = Matrix(rows: 1, columns: size.columns)
+        
+        for column in 0..<size.columns {
+            result[0, column] = self[row, column]
+        }
+        
+        return result
+    }
+    
+    public func column(_ column: Int) -> Matrix {
+        var result = Matrix(rows: size.rows, columns: 1)
+        
+        for row in 0..<size.rows {
+            result[row, 0] = self[row, column]
+        }
+        
+        return result
     }
     
     // MARK: - Overloading operators
