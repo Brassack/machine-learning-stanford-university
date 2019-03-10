@@ -28,6 +28,13 @@ public struct Matrix {
     public var sum: Double {
         return grid.reduce(0, +)
     }
+    public var mean: Double { return grid.reduce(0, +) / Double(grid.count) }//mean == average
+    public var std: Double { //standart deviation
+        let mean = self.mean
+        let sumOfSquaredAvgDiff = grid.map { pow($0 - mean, 2.0) } .reduce(0, +)
+        return sqrt(sumOfSquaredAvgDiff/Double(grid.count - 1))
+    }
+    
     // MARK: - String representation
     public var description: String {
         var description = ""
@@ -51,8 +58,14 @@ public struct Matrix {
         
         return description
     }
-    
+
     //MARK: Inverse
+    //https://youtu.be/pTUfUjIQjoE?t=365
+    //pinv(A) = inv(A'*A)*A'
+    public var pinv: Matrix {
+        return (transpose*self).inverse*transpose//Matrix.zeros(size: MatrixSize(rows: 0, columns: 0))
+    }
+
     //No description in cource so i used accelerate framework
     //https://stackoverflow.com/questions/26811843/matrix-inversion-in-swift-using-accelerate-framework
     public var inverse: Matrix {
@@ -69,6 +82,10 @@ public struct Matrix {
             dgetri_($0, &inMatrix, $0, &pivots, &workspace, $0, &error)
         }
 
+        if error != 0 {
+            print("Error inverting matrix code: ", error)
+        }
+        
         return Matrix(elements: inMatrix, rows: size.rows)
     }
     
@@ -144,7 +161,6 @@ public struct Matrix {
     //MARK: - Appending
     public func appending(columns: Matrix) -> Matrix {
         assert(size.rows != columns.size.rows, "Invalid amount of rows")
-        print(#function)
         let newSize = MatrixSize(rows: size.rows, columns: size.columns + columns.size.columns)
         var newArray = [Double](repeating: 0, count: newSize.columns*newSize.rows)
         

@@ -41,3 +41,26 @@ public func gradientDescent(withAlpha alpha: Double, iterations: Int, x: Matrix,
     
     return result
 }
+
+
+public func featureNormalisation(_ x: Matrix) -> (x_norm: Matrix, mu: Matrix, sigma: Matrix) {
+    
+    let n = x.size.rows//number of features
+    let m = x.size.columns//training examples
+    
+    var x_norm = x
+    var mu = Matrix(rows: n, columns: 1)
+    var sigma = Matrix(rows: n, columns: 1)
+    
+    
+    for j in 0..<n {
+        let feature = x.row(j)
+        mu[j, 0] = feature.mean
+        sigma[j, 0] = feature.std
+        for i in 0..<m {
+            x_norm[j, i] = (x[j, i] - mu[j, 0])/sigma[j, 0]
+        }
+    }
+    
+    return (x_norm: x_norm, mu: mu, sigma: sigma)
+}

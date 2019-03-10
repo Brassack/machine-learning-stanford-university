@@ -4,5 +4,6 @@
         <page name='Matrix'/>
         <page name='Gradient descent'/>
         <page name='ex1'/>
+        <page name='ex1_multi'/>
     </pages>
 </playground>
