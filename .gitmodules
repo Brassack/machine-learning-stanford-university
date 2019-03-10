@@ -1,0 +1,3 @@
+[submodule "practice"]
+	path = practice
+	url = https://github.com/Brassack/machine-learning-stanford-university-practice.git
