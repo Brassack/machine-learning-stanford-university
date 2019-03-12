@@ -1,31 +1,31 @@
 import Foundation
 
 public func hypothesys(x: Matrix, theta: Matrix) -> Double {
-    return (theta * x).sum
+    return (x*theta).sum
 }
 
 public func computeCost(x: Matrix, y: Matrix, theta: Matrix) -> Double {
-    let m = x.size.columns
+    let m = x.size.rows//number of trainig examples
     
     return 1/(2*Double(m))
             * (0..<m).map {
-                    pow((hypothesys(x: x.column($0), theta: theta) - y[0, $0]), 2)
+                    pow((hypothesys(x: x.row($0), theta: theta) - y[$0, 0]), 2)
                 } .reduce(0, +)
 }
 
 public func updatedTheta(withAlpha alpha: Double, x: Matrix, y: Matrix, theta: Matrix) -> Matrix {
     var result = theta
     
-    let m = x.size.columns//trainig examples
-    let n = theta.size.columns//number of feature
+    let m = x.size.rows//trainig examples
+    let n = theta.size.rows//number of feature
 
     for j in 0..<n {
         let sum = (0..<m).map { (i) -> Double in
-                        let h = hypothesys(x: x.column(i), theta: theta)
-                        return (h - y[0, i]) * x[j, i]
+                        let h = hypothesys(x: x.row(i), theta: theta)
+                        return (h - y[i, 0]) * x[i, j]
                     }
                     .reduce(0, +)
-        result[0, j] = theta[0, j] - alpha * (1/Double(m)) * sum
+        result[j, 0] = theta[j, 0] - alpha * (1/Double(m)) * sum
     }
     
     return result
@@ -45,20 +45,20 @@ public func gradientDescent(withAlpha alpha: Double, iterations: Int, x: Matrix,
 
 public func featureNormalisation(_ x: Matrix) -> (x_norm: Matrix, mu: Matrix, sigma: Matrix) {
     
-    let n = x.size.rows//number of features
-    let m = x.size.columns//training examples
+    let n = x.size.columns//number of features
+    let m = x.size.rows//training examples
     
     var x_norm = x
-    var mu = Matrix(rows: n, columns: 1)
-    var sigma = Matrix(rows: n, columns: 1)
+    var mu = Matrix(rows: 1, columns: n)
+    var sigma = Matrix(rows: 1, columns: n)
     
     
     for j in 0..<n {
-        let feature = x.row(j)
-        mu[j, 0] = feature.mean
-        sigma[j, 0] = feature.std
+        let feature = x.column(j)
+        mu[0, j] = feature.mean
+        sigma[0, j] = feature.std
         for i in 0..<m {
-            x_norm[j, i] = (x[j, i] - mu[j, 0])/sigma[j, 0]
+            x_norm[i, j] = (x[i, j] - mu[0, j])/sigma[0, j]
         }
     }
     

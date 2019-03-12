@@ -14,10 +14,10 @@ var data2X: Matrix = {
     for i in 1..<ex1data2.size.columns - 1 {
         result = result.appending(columns: ex1data2.column(i))
     }
-    return result.transpose
+    return result
 }()
 
-let data2Y = ex1data2.column(ex1data2.size.columns - 1).transpose
+let data2Y = ex1data2.column(ex1data2.size.columns - 1)
 
 let alpha2 = 0.01;
 let iterations2 = 400;
@@ -25,26 +25,27 @@ let iterations2 = 400;
 let normalisation = featureNormalisation(data2X)
 print("mu\n", normalisation.mu.description, "\n sigma\n", normalisation.sigma.description)
 
-let gradientDescentX2 = Matrix.ones(size: MatrixSize(rows: 1, columns: data2X.size.columns)).appending(rows: normalisation.x_norm)
+let gradientDescentX2 = Matrix.ones(size: MatrixSize(rows: data2X.size.rows, columns: 1)).appending(columns: normalisation.x_norm)
 
-var theta = Matrix.zeros(size: MatrixSize(rows: 1, columns: gradientDescentX2.size.rows))
+var theta = Matrix.zeros(size: MatrixSize(rows: gradientDescentX2.size.columns, columns: 1))
 
 theta = gradientDescent(withAlpha: alpha2, iterations: iterations2, x: gradientDescentX2, y: data2Y, theta: theta)
 print("Theta computed from gradient descent: \n", theta.description)
 
-var predictedHouse = Matrix(elements: [1650, 3], rows: 2)
+var predictedHouse = Matrix(elements: [1650, 3], rows: 1)
 
-for i in 0..<predictedHouse.size.rows {
-    predictedHouse[i , 0] = (predictedHouse[i, 0] - normalisation.mu[i, 0])/normalisation.sigma[i, 0]
+for i in 0..<predictedHouse.size.columns {
+    predictedHouse[0 , i] = (predictedHouse[0, i] - normalisation.mu[0, i])/normalisation.sigma[0, i]
 }
 
-predictedHouse = Matrix.ones(size: MatrixSize(rows: 1, columns: predictedHouse.size.columns)).appending(rows: predictedHouse)
-let price = (predictedHouse.transpose*theta.transpose).sum
+predictedHouse = Matrix.ones(size: MatrixSize(rows: predictedHouse.size.rows, columns: 1)).appending(columns: predictedHouse)
+
+let price = (predictedHouse*theta).sum
 
 print("Predicted price of a 1650 sq-ft, 3 br house (using gradient descent): ", price, " should be ~ $289314.620338")
 
 
-let neX2 = Matrix.ones(size: MatrixSize(rows: 1, columns: data2X.size.columns)).appending(rows: data2X)
+let neX2 = Matrix.ones(size: MatrixSize(rows: data2X.size.rows, columns: 1)).appending(columns: data2X)
 
 var neTheta = normalEquations(x: neX2, y: data2Y)
 print("Theta computed from the normal equations: \n", neTheta.description)

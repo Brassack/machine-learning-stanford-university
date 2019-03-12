@@ -16,14 +16,13 @@ print("Loaded data: \n", ex1data1.description)
 
 
 let data1X: Matrix = {
-    let data = ex1data1.column(0).transpose
-    return Matrix.ones(size: MatrixSize(rows: 1, columns: data.size.columns)).appending(rows: data)
+    let data = ex1data1.column(0)
+    return Matrix.ones(size: MatrixSize(rows: data.size.rows, columns: 1)).appending(columns: data)
 }()
 
-let data1Y = ex1data1.column(1).transpose
+let data1Y = ex1data1.column(1)
 
-
-var theta = Matrix.zeros(size: MatrixSize(rows: 1, columns: data1X.size.rows))
+var theta = Matrix.zeros(size: MatrixSize(rows: data1X.size.columns, columns: 1))
 
 
 let iterations = 1500
@@ -33,7 +32,7 @@ let J = computeCost(x: data1X, y: data1Y,  theta: theta)
 print("With theta\n \(theta.description)\nCost computed =", J)
 print("Expected cost value (approx) 32.07")
 
-let J2 = computeCost(x: data1X, y: data1Y, theta: Matrix(elements: [-1, 2], rows: 1))
+let J2 = computeCost(x: data1X, y: data1Y, theta: Matrix(elements: [-1, 2], rows: 2))
 print("\nWith theta = [-1 ; 2]\nCost computed = ", J2);
 print("Expected cost value (approx) 54.24");
 
