@@ -28,19 +28,19 @@ var theta = Matrix.zeros(size: MatrixSize(rows: data1X.size.columns, columns: 1)
 let iterations = 1500
 let alpha = 0.01
 
-let J = computeCost(x: data1X, y: data1Y,  theta: theta)
+let J = LinearRegression.computeCost(x: data1X, y: data1Y,  theta: theta)
 print("With theta\n \(theta.description)\nCost computed =", J)
 print("Expected cost value (approx) 32.07")
 
-let J2 = computeCost(x: data1X, y: data1Y, theta: Matrix(elements: [-1, 2], rows: 2))
+let J2 = LinearRegression.computeCost(x: data1X, y: data1Y, theta: Matrix(elements: [-1, 2], rows: 2))
 print("\nWith theta = [-1 ; 2]\nCost computed = ", J2);
 print("Expected cost value (approx) 54.24");
 
 print("\nRunning Gradient Descent ...")
 
-theta = gradientDescent(withAlpha: alpha, iterations: iterations, x: data1X, y: data1Y, theta: theta)
+theta = LinearRegression.gradientDescent(withAlpha: alpha, iterations: iterations, x: data1X, y: data1Y, theta: theta)
 
 print("Theta found by gradient descent:\n", theta.description)
 print("Expected theta values (approx) \n-3.6303\n1.1664");
 
-print("\nResult cost: ", computeCost(x: data1X, y: data1Y,  theta: theta))
+print("\nResult cost: ", LinearRegression.computeCost(x: data1X, y: data1Y,  theta: theta))

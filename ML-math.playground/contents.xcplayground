@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<playground version='6.0' target-platform='macos' executeOnSourceChanges='false'>
+<playground version='6.0' target-platform='macos'>
     <pages>
         <page name='Matrix'/>
         <page name='Gradient descent'/>
         <page name='ex1'/>
         <page name='ex1_multi'/>
+        <page name='ex2'/>
+        <page name='ex2_reg'/>
     </pages>
 </playground>
